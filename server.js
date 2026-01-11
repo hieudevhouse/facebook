@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Kết nối MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/facebook_clone', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://hieunmhe170295:hoakito1234@cluster1.wpijfbt.mongodb.net/facebook', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
