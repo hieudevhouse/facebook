@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Facebook Clone</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f0f2f5;
+            color: #1c1e21;
+        }
+
+        /* Header */
+        .header {
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 56px;
+        }
+
+        .logo {
+            color: #1877f2;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .admin-email {
+            font-size: 14px;
+            color: #65676b;
+        }
+
+        .logout-btn {
+            background: #e4e6eb;
+            color: #050505;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #d8dadf;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* Stats Cards */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: #65676b;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1877f2;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e4e6eb;
+        }
+
+        .tab {
+            background: none;
+            border: none;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #65676b;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            background: #f0f2f5;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .tab.active {
+            color: #1877f2;
+            border-bottom-color: #1877f2;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Table */
+        .table-container {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e4e6eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .search-box {
+            padding: 8px 12px;
+            border: 1px solid #ccd0d5;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 300px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #1877f2;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f0f2f5;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #65676b;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 16px 20px;
+            border-top: 1px solid #e4e6eb;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f7f8fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge.failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge.admin {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .badge.user {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        /* Device Info */
+        .device-info {
+            font-size: 12px;
+            color: #65676b;
+        }
+
+        .device-info span {
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 16px;
+            color: #65676b;
+        }
+
+        .spinner {
+            border: 3px solid #f0f2f5;
+            border-top: 3px solid #1877f2;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state img {
+            width: 100px;
+            opacity: 0.5;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            color: #65676b;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            color: #8a8d91;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+        }
+
+        /* Refresh Button */
+        .refresh-btn {
+            background: #1877f2;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background: #166fe5;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <h1 class="logo">facebook</h1>
+            <div class="admin-info">
+                <span class="admin-email">👤 <%= user.email %></span>
+                <a href="/logout"><button class="logout-btn">Đăng xuất</button></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Stats Cards -->
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Tổng số người dùng</h3>
+                <div class="number" id="totalUsers">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Lượt đăng nhập thất bại</h3>
+                <div class="number" id="failedLogins">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Hôm nay</h3>
+                <div class="number" id="todayAttempts">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Tuần này</h3>
+                <div class="number" id="weekAttempts">0</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('loginHistory')">📊 Lịch sử đăng nhập</button>
+            <button class="tab" onclick="switchTab('users')">👥 Người dùng</button>
+        </div>
+
+        <!-- Login History Section -->
+        <div class="content-section active" id="loginHistorySection">
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>Lịch sử đăng nhập thất bại</h2>
+                    <div class="action-buttons">
+                        <input type="text" id="searchLoginHistory" class="search-box" placeholder="🔍 Tìm kiếm email, IP...">
+                        <button class="refresh-btn" onclick="loadLoginHistory()">🔄 Làm mới</button>
+                    </div>
+                </div>
+                <div id="loginHistoryContent">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Đang tải dữ liệu...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div class="content-section" id="usersSection">
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>Danh sách người dùng</h2>
+                    <div class="action-buttons">
+                        <input type="text" id="searchUsers" class="search-box" placeholder="🔍 Tìm kiếm tên, email...">
+                        <button class="refresh-btn" onclick="loadUsers()">🔄 Làm mới</button>
+                    </div>
+                </div>
+                <div id="usersContent">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Đang tải dữ liệu...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let loginHistoryData = [];
+        let usersData = [];
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            if (tabName === 'loginHistory') {
+                document.getElementById('loginHistorySection').classList.add('active');
+            } else if (tabName === 'users') {
+                document.getElementById('usersSection').classList.add('active');
+            }
+        }
+
+        // Load Login History
+        async function loadLoginHistory() {
+            try {
+                const response = await fetch('/api/login-history');
+                const data = await response.json();
+                loginHistoryData = data;
+
+                const content = document.getElementById('loginHistoryContent');
+
+                if (data.length === 0) {
+                    content.innerHTML = `
+                        <div class="empty-state">
+                            <h3>Chưa có dữ liệu</h3>
+                            <p>Chưa có lượt đăng nhập thất bại nào được ghi nhận</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const tableHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Password</th>
+                                <th>Thời gian</th>
+                                <th>IP Address</th>
+                                <th>Device Info</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.map(item => `
+                                <tr>
+                                    <td><strong>${item.email}</strong></td>
+                                    <td>${item.password}</td>
+                                    <td>${new Date(item.attemptedAt).toLocaleString('vi-VN')}</td>
+                                    <td>${item.ipAddress}</td>
+                                    <td>
+                                        <div class="device-info">
+                                            <span>📱 ${item.device?.deviceType || 'Unknown'}</span>
+                                            <span>💻 ${item.device?.os || 'Unknown'}</span>
+                                            <span>🌐 ${item.device?.browser || 'Unknown'}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge ${item.success ? 'success' : 'failed'}">
+                                            ${item.success ? '✓ Thành công' : '✗ Thất bại'}
+                                        </span>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+
+                content.innerHTML = tableHTML;
+                updateStats();
+            } catch (error) {
+                console.error('Lỗi tải login history:', error);
+                document.getElementById('loginHistoryContent').innerHTML = `
+                    <div class="empty-state">
+                        <h3>Lỗi tải dữ liệu</h3>
+                        <p>Không thể tải lịch sử đăng nhập. Vui lòng thử lại.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Load Users
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/users');
+                const data = await response.json();
+                usersData = data;
+
+                const content = document.getElementById('usersContent');
+
+                if (data.length === 0) {
+                    content.innerHTML = `
+                        <div class="empty-state">
+                            <h3>Chưa có người dùng</h3>
+                            <p>Chưa có người dùng nào đăng ký</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const tableHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Họ tên</th>
+                                <th>Email</th>
+                                <th>Ngày sinh</th>
+                                <th>Giới tính</th>
+                                <th>Vai trò</th>
+                                <th>Ngày đăng ký</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.map(user => `
+                                <tr>
+                                    <td><strong>${user.fullName}</strong></td>
+                                    <td>${user.email}</td>
+                                    <td>${user.dob}</td>
+                                    <td>${user.gender === 'male' ? '👨 Nam' : user.gender === 'female' ? '👩 Nữ' : '⚧ Khác'}</td>
+                                    <td>
+                                        <span class="badge ${user.role === 'admin' ? 'admin' : 'user'}">
+                                            ${user.role === 'admin' ? '⭐ Admin' : '👤 User'}
+                                        </span>
+                                    </td>
+                                    <td>${new Date(user.createdAt).toLocaleString('vi-VN')}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+
+                content.innerHTML = tableHTML;
+                updateStats();
+            } catch (error) {
+                console.error('Lỗi tải users:', error);
+                document.getElementById('usersContent').innerHTML = `
+                    <div class="empty-state">
+                        <h3>Lỗi tải dữ liệu</h3>
+                        <p>Không thể tải danh sách người dùng. Vui lòng thử lại.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Update Statistics
+        function updateStats() {
+            document.getElementById('totalUsers').textContent = usersData.length;
+            document.getElementById('failedLogins').textContent = loginHistoryData.length;
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const todayCount = loginHistoryData.filter(item => {
+                const itemDate = new Date(item.attemptedAt);
+                itemDate.setHours(0, 0, 0, 0);
+                return itemDate.getTime() === today.getTime();
+            }).length;
+
+            document.getElementById('todayAttempts').textContent = todayCount;
+
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+
+            const weekCount = loginHistoryData.filter(item => {
+                return new Date(item.attemptedAt) >= weekAgo;
+            }).length;
+
+            document.getElementById('weekAttempts').textContent = weekCount;
+        }
+
+        // Search functionality
+        document.getElementById('searchLoginHistory').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#loginHistorySection tbody tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        document.getElementById('searchUsers').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#usersSection tbody tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Load data on page load
+        window.addEventListener('load', async () => {
+            await loadLoginHistory();
+            await loadUsers();
+        });
+
+        // Auto refresh every 30 seconds
+        setInterval(() => {
+            loadLoginHistory();
+            loadUsers();
+        }, 30000);
+    </script>
+</body>
+</html>
